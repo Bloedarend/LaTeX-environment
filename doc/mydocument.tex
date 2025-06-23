@@ -1,0 +1,31 @@
+\documentclass{article}
+
+\usepackage{graphicx}
+\usepackage{titling}
+\usepackage{fancyhdr}
+\usepackage{mypackage}
+
+\title{LaTeX Environment}
+\author{Bloedarend}
+\date{\today}
+
+\pretitle{
+    \begin{center}
+    \includegraphics[width=0.3\textwidth]{../img/latex-icon}\\[\bigskipamount]
+    \LARGE
+}
+\posttitle{\end{center}}
+
+\begin{document}
+
+    \maketitle
+
+    \begin{center}
+        \section{My document}\label{sec:my-document}
+        This is an example document.
+
+        \section{My package}\label{sec:my-package}
+        If this page is coloured green, it means the test package 'mypackage' was included correctly.
+        If the page is coloured white, the package was not included correctly, and you may want to read the installation steps inside the README.md file.
+    \end{center}
+\end{document}
