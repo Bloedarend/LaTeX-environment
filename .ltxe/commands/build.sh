@@ -123,11 +123,12 @@ build() {
     else
         if [ -n "$target_file" ]; then
             echo "$PREFIX $EMOJI_ERROR $target_file failed to compile."
-            echo "$PREFIX See the log directory for more information."
+            echo "$PREFIX The pdf file may still have been generated, but some content would be missing or corrupt."
         else
             echo "$PREFIX $EMOJI_ERROR $build_failed out of $build_amount .tex files failed to compile."
-            echo "$PREFIX See the log directory for more information."
+            echo "$PREFIX The pdf files may still have been generated, but some content would be missing or corrupt."
         fi
+        echo "$PREFIX See the log directory for more information."
     fi
 }
 
