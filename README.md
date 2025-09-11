@@ -3,27 +3,38 @@ LaTeX Environment (LTXE) is a repository designed to make working with LaTeX pro
 
 LaTeX is a powerful way to write documents programmatically and produce polished PDFs, but customizing it often comes with challenges.
 For example, on cloud-based editors like Overleaf, using `-shell-escape` is restricted, which limits the use of custom packages.
-Managing these packages locally and keeping projects consistent across collaborators can quickly become messy.
+Managing these packages locally and keeping projects consistent across collaborators can become quite messy.
 
 LTXE addresses these issues by providing scripts to manage LaTeX packages in a personal TeX tree and by handling builds in a consistent way.
 Documents are compiled locally, with all outputs collected in a clean `out/` folder.
 
-By combining this setup with git version control, projects can stay organized, custom packages are easy to share, and collaboration becomes simpler.
+By combining this setup with Git version control, projects can stay organized, custom packages are easy to share, and collaboration becomes simpler.
+
+## Table of Contents
+- [Usage](#usage)
+  - [Project Structure](#project-structure)
+  - [Commands](#commands)
+- [Setup](#setup)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+- [Custom Packages](#custom-packages)
+  - [Adding Custom Packages](#adding-custom-packages)
+  - [Creating Custom Packages](#creating-custom-packages)
 
 ## Usage
 ### Project Structure
 The project structure is organized as follows:
 ```bash
 LaTeX-environment/
-├── .ltxe/*                       # Script files for ltxe, which should remain untouched.
+├── .ltxe/*                       # Script files for LTXE, which should remain untouched.
 ├── bib/                          # BibTeX files for bibliography management.
 │   └── references.bib            # - Can be used in your documents to cite sources.
-├── doc/                          # LaTeX source files, and other relevant files.
+├── doc/                          # TeX source files, and other relevant files.
 │   └── my-document.tex           # - Will be copied to ./out, then be compiled to a pdf.
 │   └── my-data.csv               # - Will be copied to ./out
 ├── fig/                          # Image files for figures and graphics.
 │   └── my-figure.png             # - Can be included as a figure in your documents.
-├── inc/                          # Partial LaTeX source files.
+├── inc/                          # Partial TeX source files.
 │   └── my-included-document.tex  # - Can be included as a partial LaTeX source file in your main documents. Useful for sharing common content across multiple documents.
 ├── log/                          # Log files for LaTeX compilation.
 ├── out/                          # Output files for compiled PDFs and copied files.
@@ -32,7 +43,7 @@ LaTeX-environment/
 │       └── tex/latex/mypackage/
 │           └── mypackage.sty     # - Custom LaTeX package style file.
 │           └── post-sync.sh      # - Post-sync script executed after synchronizing packages to your personal tree.
-└── ltxe.sh                       # Main script file for ltxe, which should remain untouched.
+└── ltxe.sh                       # Main script file for LTXE, which should remain untouched.
 ```
 
 ### Commands
@@ -45,8 +56,8 @@ The following commands are available:
 | `clean (c)`    |                                                   | Remove all example files from the project. |
 | `list (l, ls)` |                                                   | List all packages in the project. |
 | `remove (rm)`  | `<name>`                                          | Remove a custom package from the project. |
-| `sync (s)`     |                                                   | Sync custom packages from the project to your personal tex tree. |
-| `tree (t)`     |                                                   | List all packages registered to your personal tex tree. |
+| `sync (s)`     |                                                   | Sync custom packages from the project to your personal TeX tree. |
+| `tree (t)`     |                                                   | List all packages registered to your personal TeX tree. |
 
 On Linux, commands can be executed using the `./ltxe.sh` script inside the root directory of the project.
 The same scripts can also be executed on MacOS, but may only partially work due to differences in the operating systems.
@@ -75,15 +86,14 @@ This project is tested with **TeX Live**, but any of the following distributions
 
 If you want to add custom packages via the `add` command, you will also need to install [Git](https://git-scm.com/downloads).
 
-## Installation
+### Installation
 1. Clone this repository, or download it as zip and extract it.
 2. Run the `build` command. Verify that `my-document.pdf` is generated into the `out/` directory.
 3. Run the `clean` command to remove all example files.
 4. Start writing your own LaTeX documents!
 
 ## Custom Packages
-
-### Using custom packages
+### Using Custom Packages
 There are two ways to add custom packages to your LaTeX environment:
 1. Using the `add` command to add a package from a Git repository.
 2. Moving or creating a directory inside the `pkg/` directory.
@@ -93,7 +103,7 @@ This command will also run the post-sync scripts from each package.
 
 > **NOTE:** Note that you will most likely have to restart language servers for your IDE to see the updated TeX file database.
 
-### Creating custom packages
+### Creating Custom Packages
 Create a new directory inside the `pkg/` directory. The name of the directory should be equal to your package name.
 Place your `.sty`, `.cls` etc. files in the new directory using the standard LaTeX tree layout:
 
