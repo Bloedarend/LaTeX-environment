@@ -1,12 +1,62 @@
 # LaTeX Environment
-This project provides a minimal yet powerful local LaTeX setup, including:
-- One-line build command.
-- Local package management (with personal texmf tree)
-- Recursive document building and smart output cleanup.
+LaTeX Environment (LTXE) is a repository designed to make working with LaTeX projects easier.
 
-## Prerequisites
+LaTeX is a powerful way to write documents programmatically and produce polished PDFs, but customizing it often comes with challenges.
+For example, on cloud-based editors like Overleaf, using `-shell-escape` is restricted, which limits the use of custom packages.
+Managing these packages locally and keeping projects consistent across collaborators can quickly become messy.
+
+LTXE addresses these issues by providing scripts to manage LaTeX packages in a personal TeX tree and by handling builds in a consistent way.
+Documents are compiled locally, with all outputs collected in a clean `out/` folder.
+
+By combining this setup with git version control, projects can stay organized, custom packages are easy to share, and collaboration becomes simpler.
+
+## Usage
+### Project Structure
+The project structure is organized as follows:
+```bash
+LaTeX-environment/
+├── .ltxe/*                       # Script files for ltxe, which should remain untouched.
+├── bib/                          # BibTeX files for bibliography management.
+│   └── references.bib            # - Can be used in your documents to cite sources.
+├── doc/                          # LaTeX source files, and other relevant files.
+│   └── my-document.tex           # - Will be copied to ./out, then be compiled to a pdf.
+│   └── my-data.csv               # - Will be copied to ./out
+├── fig/                          # Image files for figures and graphics.
+│   └── my-figure.png             # - Can be included as a figure in your documents.
+├── inc/                          # Partial LaTeX source files.
+│   └── my-included-document.tex  # - Can be included as a partial LaTeX source file in your main documents. Useful for sharing common content across multiple documents.
+├── log/                          # Log files for LaTeX compilation.
+├── out/                          # Output files for compiled PDFs and copied files.
+├── pkg/                          # Package files for custom LaTeX packages.
+│   └── mypackage/                # - Custom LaTeX package
+│       └── tex/latex/mypackage/
+│           └── mypackage.sty     # - Custom LaTeX package style file.
+│           └── post-sync.sh      # - Post-sync script executed after synchronizing packages to your personal tree.
+└── ltxe.sh                       # Main script file for ltxe, which should remain untouched.
+```
+
+### Commands
+The following commands are available:
+
+| Command        | Arguments | Description |
+|----------------|-----------|-------------|
+| `add (a)`      | `<name>` `<repository>`                           | Add a custom package from a Git repository. |
+| `build (b)`    | `[absolute_path\|relative_path_to_doc_directory]` | Compile all `.tex` files from the `doc/` directory, and move those along with all non `.tex` files to the `out/` directory. |
+| `clean (c)`    |                                                   | Remove all example files from the project. |
+| `list (l, ls)` |                                                   | List all packages in the project. |
+| `remove (rm)`  | `<name>`                                          | Remove a custom package from the project. |
+| `sync (s)`     |                                                   | Sync custom packages from the project to your personal tex tree. |
+| `tree (t)`     |                                                   | List all packages registered to your personal tex tree. |
+
+On Linux, commands can be executed using the `./ltxe.sh` script inside the root directory of the project.
+The same scripts can also be executed on MacOS, but may only partially work due to differences in the operating systems.
+Since I do not own a MacOS device, I cannot test the scripts for Mac users.
+If you are a Mac user, and something does not work as expected, please open an issue [here](https://github.com/Bloedarend/LaTeX-Environment/issues).
+
+## Setup
+### Prerequisites
 Make sure you have a LaTeX distribution (SDK) installed on your machine.
-We recommend **TeX Live**, but any of the following distributions should work:
+This project is tested with **TeX Live**, but any of the following distributions should work:
 
 | Distribution | OS Support            | Installation Guide / Website                                                       |
 |--------------|-----------------------|------------------------------------------------------------------------------------|
@@ -18,78 +68,57 @@ We recommend **TeX Live**, but any of the following distributions should work:
 
 > **NOTE:** Most SDKs already come with `latexmk`, which automates multi-pass builds.
 > Validate that it is installed by running:<br>
-> ```bash 
-> latexmk -v 
+> ```bash
+> latexmk -v
 > ```
 > If it's missing, follow [this guide](https://mgeier.github.io/latexmk.html#installation) to install it.
 
+If you want to add custom packages via the `add` command, you will also need to install [Git](https://git-scm.com/downloads).
+
 ## Installation
 1. Clone this repository, or download it as zip and extract it.
-2. In your terminal, run:
-   ```bash
-   ./ltxe.sh update # Copies packages from ./lib into your personal tree.
-   ./ltxe.sh build # Builds all .tex files in ./doc, and outputs them to ./out
-   ```
-3. Verify output by opening `out/mydocument.pdf`. If everything works, the background should be green.
+2. Run the `build` command. Verify that `my-document.pdf` is generated into the `out/` directory.
+3. Run the `clean` command to remove all example files.
+4. Start writing your own LaTeX documents!
 
-## Usage
-### Commands
-Commands can be executed from the root directory using `./ltxe.sh <command>` in your terminal. 
+## Custom Packages
 
-| Command    | Description                                                                         |
-|------------|-------------------------------------------------------------------------------------|
-| help       | Show command reference.                                                             |
-| ls         | List installed packages in your personal texmf tree.                                |
-| update (u) | Copy local packages from `./lib` to your personal texmf tree, and refresh TeX DB.   |
-| build (b)  | Compile all `.tex` files in `./doc`, and place outputs (and other files) in `./out` |
+### Using custom packages
+There are two ways to add custom packages to your LaTeX environment:
+1. Using the `add` command to add a package from a Git repository.
+2. Moving or creating a directory inside the `pkg/` directory.
 
-### File structure
-```bash
-.
-├── ltxe.sh             # The main command script
-├── doc/                # Your .tex source files and other related assets
-│   └── mydocument.tex  # - Will be compiled to pdf, then be copied to ./out
-│   └── data.xlsx       # - Will be copied to ./out
-├── out/                # Compiled PDFs and copied assets go here
-├── lib/                # Custom LaTeX packages (optional)
-│   └── mypackage/
-│       └── tex/latex/mypackage/mypackage.sty
-├── img/                # Images used in your documents
-```
-The build command will:
-- Recursively find all `.tex` files in `./doc`.
-- Run `latexmk` on each file, outputting compiled `.pdf` files o `./out`.
-- Copy any non-Tex files to `./out`.
+After adding packages to the `pkg/` directory, you need to run the `sync` command to update your personal LaTeX environment.
+This command will also run the post-sync scripts from each package.
 
-### Adding custom packages
-Create a new directory inside `./lib`. The name of the directory should be equal to your package name.
+> **NOTE:** Note that you will most likely have to restart language servers for your IDE to see the updated TeX file database.
+
+### Creating custom packages
+Create a new directory inside the `pkg/` directory. The name of the directory should be equal to your package name.
 Place your `.sty`, `.cls` etc. files in the new directory using the standard LaTeX tree layout:
 
-| Type   | 	Directory                         | 	Description                                      |
-|--------|------------------------------------|---------------------------------------------------|
-| .afm   | 	fonts/afm/foundry/typeface        | 	Adobe Font Metrics for Type 1 fonts              |
-| .bib   | 	bibtex/bib/bibliography           | 	BibTeX bibliography                              |
-| .bst   | 	bibtex/bst/<package_name>         | 	BibTeX style                                     |
-| .cls   | 	tex/latex/base                    | 	Document class file                              |
-| .dvi   | 	doc 	                             | package documentation                             |
-| .enc   | 	fonts/enc                         | 	Font encoding                                    |
-| .fd 	  | tex/latex/mfnfss                   | 	Font Definition files for METAFONT fonts         |
-| .fd    | 	tex/latex/psnfss 	                | Font Definition files for PostScript Type 1 fonts |
-| .map   | 	fonts/map 	                       | Font mapping files                                |
-| .mf 	  | fonts/source/public/typeface 	     | METAFONT outline                                  |
-| .pdf   | 	doc 	                             | package documentation                             |
-| .pfb   | 	fonts/type1/foundry/typeface 	    | PostScript Type 1 outline                         |
-| .sty   | 	tex/latex/<package_name> 	        | Style file: the normal package content            |
-| .tex   | 	doc 	                             | TeX source for package documentation              |
-| .tex   | 	tex/plain/<package_name> 	        | Plain TeX macro files                             |
-| .tfm   | 	fonts/tfm/foundry/typeface        | 	TeX Font Metrics for METAFONT and Type 1 fonts   |
-| .ttf   | 	fonts/truetype/foundry/typeface 	 | TrueType font                                     |
-| .vf 	  | fonts/vf/foundry/typeface 	        | TeX virtual fonts                                 |
-| others | 	tex/latex/<package_name> 	        | other types of file unless instructed otherwise   |
+| Type   | Directory                       | Description                                       |
+|--------|---------------------------------|---------------------------------------------------|
+| .afm   | fonts/afm/foundry/typeface      | 	Adobe Font Metrics for Type 1 fonts              |
+| .bib   | bibtex/bib/bibliography         | 	BibTeX bibliography                              |
+| .bst   | bibtex/bst/<package_name>       | 	BibTeX style                                     |
+| .cls   | tex/latex/base                  | 	Document class file                              |
+| .dvi   | doc 	                           | package documentation                             |
+| .enc   | fonts/enc                       | 	Font encoding                                    |
+| .fd 	 | tex/latex/mfnfss                | 	Font Definition files for METAFONT fonts         |
+| .fd 	 | tex/latex/psnfss 	             | Font Definition files for PostScript Type 1 fonts |
+| .map   | fonts/map 	                     | Font mapping files                                |
+| .mf 	 | fonts/source/public/typeface 	 | METAFONT outline                                  |
+| .pdf   | doc 	                           | package documentation                             |
+| .pfb   | fonts/type1/foundry/typeface 	 | PostScript Type 1 outline                         |
+| .sty   | tex/latex/<package_name> 	     | Style file: the normal package content            |
+| .tex   | doc 	                           | TeX source for package documentation              |
+| .tex   | tex/plain/<package_name> 	     | Plain TeX macro files                             |
+| .tfm   | fonts/tfm/foundry/typeface 	   | TeX Font Metrics for METAFONT and Type 1 fonts    |
+| .ttf   | fonts/truetype/foundry/typeface | TrueType font                                     |
+| .vf 	 | fonts/vf/foundry/typeface 	     | TeX virtual fonts                                 |
+| others | tex/latex/<package_name> 	     | other types of file unless instructed otherwise   |
 
-Then run:
-```bash
-./ltxe.sh update
-```
-This copies your local packages into your personal texmf tree and refreshes the TeX file database.
-> **NOTE:** Note that you will most likely have to restart your terminal or IDE session to see the updated TeX file database.
+If your package needs to run commands after synchronization, you can add a `post-sync.sh` script inside the `tex/latex/<package_name>` directory.
+An example usage for a post install script may be to register a custom pygmentize style using Python.
+The script will be executed after the synchronization process is completed.
