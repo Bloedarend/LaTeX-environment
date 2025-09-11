@@ -7,6 +7,8 @@ source "$CLEAN_COMMAND_DIR/../globals.sh"
 clean_aliases=(c)
 
 clean() {
+    echo "$PREFIX Cleaning project directories..."
+
     mkdir -p "$PACKAGE_DIR"
     mkdir -p "$DOCUMENT_DIR"
     mkdir -p "$INCLUDE_DIR"
@@ -19,6 +21,8 @@ clean() {
     rm -rf "$FIGURE_DIR"/my-figure.png
 
     touch "$BIBLIOGRAPHY_DIR"/references.bib
+
+    echo "$PREFIX $EMOJI_SUCCESS Project directories cleaned successfully."
 }
 
 clean_usage() {
