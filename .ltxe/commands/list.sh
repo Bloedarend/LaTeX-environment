@@ -4,7 +4,7 @@ LIST_COMMAND_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 source "$LIST_COMMAND_DIR/../globals.sh"
 
-list_aliases=(ls)
+list_aliases=(l ls)
 
 list() {
     if [ ! -d "$PACKAGE_DIR" ]; then
