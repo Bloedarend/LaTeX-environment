@@ -2,7 +2,7 @@
 
 REMOVE_COMMAND_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-source $REMOVE_COMMAND_DIR/../globals.sh
+source "$REMOVE_COMMAND_DIR"/../globals.sh
 
 remove_aliases=(rm)
 

@@ -2,7 +2,7 @@
 
 ADD_COMMAND_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-source $ADD_COMMAND_DIR/../globals.sh
+source "$ADD_COMMAND_DIR"/../globals.sh
 
 add_aliases=(a)
 
