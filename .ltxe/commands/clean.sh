@@ -14,11 +14,13 @@ clean() {
     mkdir -p "$INCLUDE_DIR"
     mkdir -p "$FIGURE_DIR"
     mkdir -p "$BIBLIOGRAPHY_DIR"
+    mkdir -p "$TEMPLATE_DIR"
 
     rm -rf "$PACKAGE_DIR"/mypackage
     rm -rf "$DOCUMENT_DIR"/my-document.tex
     rm -rf "$INCLUDE_DIR"/my-included-document.tex
     rm -rf "$FIGURE_DIR"/my-figure.png
+    rm -rf "$TEMPLATE_DIR"/default.tex
 
     touch "$BIBLIOGRAPHY_DIR"/references.bib
 
