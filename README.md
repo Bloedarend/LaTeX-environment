@@ -43,6 +43,8 @@ LaTeX-environment/
 │       └── tex/latex/mypackage/
 │           └── mypackage.sty     # - Custom LaTeX package style file.
 │           └── post-sync.sh      # - Post-sync script executed after synchronizing packages to your personal tree.
+├── tpl/                          # Template files for LaTeX documents.
+│   └── default.tex               # - Default LaTeX template file.
 └── ltxe.sh                       # Main script file for LTXE, which should remain untouched.
 ```
 
@@ -55,6 +57,7 @@ The following commands are available:
 | `build (b)`    | `[absolute_path\|relative_path_to_doc_directory]` | Compile all `.tex` files from the `doc/` directory, and move those along with all non `.tex` files to the `out/` directory. |
 | `clean (c)`    |                                                   | Remove all example files from the project. |
 | `list (l, ls)` |                                                   | List all packages in the project. |
+| `new (n)`      | `<document_path>` `[template_name]`               | Create a new file at a path relative to the `doc/` directory, using a specified template or a default template. |
 | `remove (rm)`  | `<name>`                                          | Remove a custom package from the project. |
 | `sync (s)`     |                                                   | Sync custom packages from the project to your personal TeX tree. |
 | `tree (t)`     |                                                   | List all packages registered to your personal TeX tree. |
