@@ -5,6 +5,7 @@ GLOBALS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 COMMAND="ltxe"
 PREFIX="[$COMMAND]"
 
+TEMPLATE_DIR="$(realpath "$GLOBALS_DIR/../tpl")"
 PACKAGE_DIR="$(realpath "$GLOBALS_DIR/../pkg")"
 DOCUMENT_DIR="$(realpath "$GLOBALS_DIR/../doc")"
 INCLUDE_DIR="$(realpath "$GLOBALS_DIR/../inc")"
