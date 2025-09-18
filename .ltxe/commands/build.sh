@@ -82,7 +82,7 @@ build() {
 
         (
             cd "$OUT_DIR/$sub_dir" || exit 1
-            latexmk -pdf -pdflatex=lualatex -shell-escape -interaction=nonstopmode "$tex_file_name" > /dev/null 2>&1
+            latexmk -pdf -shell-escape -interaction=nonstopmode "$tex_file_name" > /dev/null 2>&1
         )
 
         failed=$?
