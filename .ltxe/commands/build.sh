@@ -26,7 +26,7 @@ build() {
             exit 1
         fi
 
-        find_query="${tex_file#$DOCUMENT_DIR/}"
+        find_query="${tex_file#"$DOCUMENT_DIR"/}"
     else
         echo "$PREFIX Cleaning old output."
         rm -rf "$OUT_DIR"
@@ -45,13 +45,13 @@ build() {
         echo "$PREFIX Looking for .tex files in $OUT_DIR."
     else
         echo "$PREFIX Preparing single file: $tex_file"
-        local relative_path=${tex_file#$DOCUMENT_DIR}
+        local relative_path="${tex_file#"$DOCUMENT_DIR/"}"
         cp "$tex_file" "$OUT_DIR/$relative_path"
     fi
 
-    local tex_files=$(find "$OUT_DIR" -type f -name "$find_query")
+    mapfile -d '' tex_files_array < <(find "$OUT_DIR" -type f -name "$find_query" -print0)
 
-    if [ -z "$tex_files" ]; then
+    if [ ${#tex_files_array[@]} -eq 0 ]; then
         echo "$PREFIX No .tex files found in $OUT_DIR."
         echo "$PREFIX Nothing to compile."
         exit 0
@@ -72,13 +72,13 @@ build() {
         exit 1
     fi
 
-    for tex_file in $tex_files; do
-        relative_path="${tex_file#$OUT_DIR/}"
+    for tex_file in "${tex_files_array[@]}"; do
+        relative_path="${tex_file#"$OUT_DIR"/}"
         sub_dir=$(dirname "$relative_path")
         tex_file_name=$(basename "$tex_file")
         base_name=$(basename "$tex_file" .tex)
 
-        echo -ne "    └── $relative_path."
+        echo -ne "    └── $relative_path"
 
         (
             cd "$OUT_DIR/$sub_dir" || exit 1
@@ -89,7 +89,7 @@ build() {
         build_amount=$((build_amount + 1))
 
         mkdir -p "$LOG_DIR/$sub_dir"
-        mv $(realpath "$OUT_DIR/$sub_dir/$base_name.log") $(realpath "$LOG_DIR/$sub_dir/$base_name.log") 2>/dev/null || true
+        mv "$(realpath "$OUT_DIR/$sub_dir/$base_name.log")" "$(realpath "$LOG_DIR/$sub_dir/$base_name.log")" > /dev/null || true
 
         find "$OUT_DIR/$subdir" -type f \( \
             -name "${base_name}.tex" -o \
@@ -104,7 +104,7 @@ build() {
             -name "${base_name}.bbl" \
         \) -delete
 
-        rm -rf "$OUT_DIR/$subdir/_minted-$base"
+        rm -rf "$OUT_DIR/$sub_dir/_minted-$base_name"
 
         if [ $failed -eq 0 ]; then
             echo -e "\r    └── $EMOJI_SUCCESS $relative_path."
