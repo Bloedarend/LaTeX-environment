@@ -58,7 +58,7 @@ cmd_run() {
     out_dir="$ltxe_root/$OUT_DIR"
 
     if [ ! -d "$ltxe_root/$DOC_DIR" ]; then
-      log_warning "No '$DOC_DIR' directory found."
+      log_warn "No '$DOC_DIR' directory found."
       log_info "Exiting.."
       exit 0
     fi
@@ -70,7 +70,7 @@ cmd_run() {
     total_files=${#tex_files[@]}
 
     if [ $total_files -eq 0 ]; then
-      log_warning "No '.tex' files found."
+      log_warn "No '.tex' files found."
       log_info "Exiting.."
       exit 0
     fi
