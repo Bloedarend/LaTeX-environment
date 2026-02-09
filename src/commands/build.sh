@@ -87,8 +87,7 @@ cmd_run() {
 
   export TEXMFHOME="$ltxe_root/$TEXMF_DIR"
   
-  
-  log_info "Building $total_files file(s) in parallel."
+  log_info "$(has_flag watch && echo "Watching" || echo "Building") $total_files file(s) in parallel."
   
   local result_file=$(mktemp)
   
@@ -111,6 +110,15 @@ cmd_run() {
     
     (
       cd "$(dirname "$tex_file")" || exit 1
+
+      if has_flag watch; then
+        verbose latexmk -pdf -pvc -synctex=1 \
+          -pdflatex="pdflatex -interaction=nonstopmode -shell-escape %O %S" \
+          -outdir="$build_dir" \
+          "$tex_base"
+
+        return 0
+      fi 
       
       log_info "Building '$relpath'."
 
@@ -142,13 +150,28 @@ cmd_run() {
   export -f build_file
   export ltxe_root DOC_DIR BUILD_DIR
   
-  for i in "${!tex_files[@]}"; do
-    local tex_file="${tex_files[$i]}"
-    local relpath="${tex_file#$ltxe_root/$DOC_DIR/}"
-    
-    build_file "$tex_file" "$relpath" &
-    pids+=($!)
-  done
+  if has_flag watch; then
+    for tex_file in "${tex_files[@]}"; do
+      relpath="${tex_file#$ltxe_root/$DOC_DIR/}"
+      log_info "Watching $relpath"
+      log_info "└── At: $ltxe_root/$BUILD_DIR/$relpath"
+    done
+
+    for tex_file in "${tex_files[@]}"; do
+      verbose build_file "$tex_file" "$relpath" &
+    done
+
+    wait
+    exit 0
+  else 
+    for i in "${!tex_files[@]}"; do
+      local tex_file="${tex_files[$i]}"
+      local relpath="${tex_file#$ltxe_root/$DOC_DIR/}"
+      
+      build_file "$tex_file" "$relpath" &
+      pids+=($!)
+    done
+  fi
 
   if [ ! -n "$1" ]; then
     find "$ltxe_root/$DOC_DIR" -type f ! -name "*.tex" | while IFS= read -r file; do
