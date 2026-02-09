@@ -61,9 +61,9 @@ for i in "${!COMMANDS[@]}"; do
   [ "$i" -eq $((count - 1)) ] && prefix="└──" || prefix="├──"
 
   if [ -n "$aliases" ]; then
-    echo '  echo "  $prefix $name ($aliases): $msg"'
+    echo "  echo \"  $prefix $name ($aliases): $msg\""
   else
-    echo '  echo "  $prefix $name: $msg"'
+    echo "  echo \"  $prefix $name: $msg\""
   fi
 done
 
