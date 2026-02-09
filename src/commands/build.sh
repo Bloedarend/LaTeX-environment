@@ -31,6 +31,10 @@ cmd_run() {
       target_file="$(realpath "$ltxe_root/$DOC_DIR/$target_file")"
       echo "$target_file"
     fi
+
+    if [[ $target_file != *.tex ]]; then
+      target_file="$target_file.tex"
+    fi
     
     if [ ! -f "$target_file" ]; then
       log_error "File '$1' not found."
@@ -99,6 +103,7 @@ cmd_run() {
     local tex_file="$1"
     local relpath="$2"
     local tex_base="$(basename "$tex_file")"
+    local tex_name="${tex_base%.*}"
     local tex_dir=$(dirname "$relpath")
     local build_dir="$ltxe_root/$BUILD_DIR/$tex_dir"
     
@@ -108,11 +113,16 @@ cmd_run() {
       cd "$(dirname "$tex_file")" || exit 1
       
       log_info "Building '$relpath'."
+
+      has_flag clean && (
+        log_info "Clearing build files for ${tex_base}"
+        find "$build_dir" -type f -name "${tex_name}.*" -delete
+      ) 
       
-      if latexmk -pdf -synctex=1 \
-          -pdflatex="pdflatex -interaction=nonstopmode -shell-escape -quiet %O %S" \
+      if verbose latexmk -pdf -synctex=1 \
+          -pdflatex="pdflatex -interaction=nonstopmode -shell-escape %O %S" \
           -outdir="$build_dir" \
-          "$tex_base" > /dev/null 2>&1; then
+          "$tex_base"; then
         echo "$relpath:SUCCESS" >> "$result_file"
 
         local pdf_relpath="${relpath%.tex}.pdf"

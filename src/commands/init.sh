@@ -7,7 +7,7 @@ cmd_run() {
   if [ ! -d "$target_dir" ]; then
     mkdir -p "$target_dir" || {
       log_error "Failed to create directory: $target_dir"
-    log_info "Exiting.."
+      log_info "Exiting.."
       exit 1
     }
   fi

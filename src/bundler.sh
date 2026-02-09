@@ -18,7 +18,7 @@ echo
 
 for f in "$LIB_DIR"/*.sh; do
   [ -e "$f" ] || continue
-  echo "# ---- lib: $(basename "$f") ----"
+  echo '# ---- lib: $(basename "$f") ----'
   cat "$f"
   echo
 done
@@ -34,7 +34,7 @@ for f in "$CMD_DIR"/*.sh; do
   source "$f"
 
   if [ -z "${cmd_name:-}" ] || [ -z "${cmd_help_msg:-}" ]; then
-    echo "ERROR: $f must define cmd_name and cmd_help_msg" >&2
+    echo 'ERROR: $f must define cmd_name and cmd_help_msg' >&2
     exit 1
   fi
 
@@ -42,7 +42,7 @@ for f in "$CMD_DIR"/*.sh; do
   ALIASES+=("${cmd_aliases:-}")
   HELP_MSGS+=("$cmd_help_msg")
 
-  echo "# ---- command: $cmd_name ----"
+  echo '# ---- command: $cmd_name ----'
   declare -f cmd_run | sed "s/^cmd_run/cmd_${cmd_name}_run/"
   echo
 done
@@ -61,9 +61,9 @@ for i in "${!COMMANDS[@]}"; do
   [ "$i" -eq $((count - 1)) ] && prefix="└──" || prefix="├──"
 
   if [ -n "$aliases" ]; then
-    echo "  echo \"  $prefix $name ($aliases): $msg\""
+    echo '  echo "  $prefix $name ($aliases): $msg"'
   else
-    echo "  echo \"  $prefix $name: $msg\""
+    echo '  echo "  $prefix $name: $msg"'
   fi
 done
 
@@ -72,6 +72,10 @@ echo
 
 echo 'main() {'
 echo '  cmd="$1"; shift || true'
+echo
+echo 'parse_flags "$@"'
+echo 'set -- "${POSITIONAL[@]}"'
+echo
 echo '  case "$cmd" in'
 
 for i in "${!COMMANDS[@]}"; do
