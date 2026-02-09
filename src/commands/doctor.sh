@@ -6,15 +6,15 @@ cmd_run() {
   log_info "Doctor Results:"
 
   if command -v latexmk >/dev/null 2>&1; then
-    log_info "└── ${GREEN}✓${NC} latexmk found"
+    log_info "├── ${GREEN}✓${NC} latexmk found"
   else
-    log_info "└── ${RED}✗${NC} latexmk not found"
+    log_info "├── ${RED}✗${NC} latexmk not found"
   fi
 
   if command -v pdflatex >/dev/null 2>&1; then
-    log_info "└── ${GREEN}✓${NC} pdflatex found"
+    log_info "├── ${GREEN}✓${NC} pdflatex found"
   else
-    log_info "└── ${RED}✗${NC} pdflatex not found"
+    log_info "├── ${RED}✗${NC} pdflatex not found"
   fi
 
   local script_path="$(realpath $0)"
